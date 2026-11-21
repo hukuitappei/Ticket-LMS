@@ -15,7 +15,8 @@ final class ShowAction
     {
         return $chapter->load([
             'part.certification',
-            'sections',
+            'sections' => fn ($q) => $q->ordered(),
         ]);
+
     }
 }
