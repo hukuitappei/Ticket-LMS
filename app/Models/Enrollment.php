@@ -81,6 +81,16 @@ class Enrollment extends Model
     }
 
     /**
+     * 受講生メモ(コーチ / 管理者の業務記録)。受講登録詳細のメモ欄(enrollment-note/_list.blade.php)が使う。
+     *
+     * @return HasMany<EnrollmentNote, $this>
+     */
+    public function notes(): HasMany
+    {
+        return $this->hasMany(EnrollmentNote::class);
+    }
+
+    /**
      * 最新の状態遷移ログ 1 件のみ。一覧で「直近の遷移理由」を表示するための eager load 用途。
      *
      * @return HasOne<EnrollmentStatusLog, $this>
