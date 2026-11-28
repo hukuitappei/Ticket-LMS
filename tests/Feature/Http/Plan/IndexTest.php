@@ -50,6 +50,24 @@ class IndexTest extends TestCase
         $response->assertViewHas('plans', fn ($plans) => $plans->pluck('id')->all() === [$first->id, $second->id, $third->id]);
     }
 
+    public function test_list_is_ordered_by_status_published_draft_archived_first(): void
+    {
+        $admin = User::factory()->admin()->create();
+        $archived = Plan::factory()->archived()->create(['sort_order' => 0]);
+        $draft = Plan::factory()->draft()->create(['sort_order' => 0]);
+        $publishedLater = Plan::factory()->published()->create(['sort_order' => 5]);
+        $publishedFirst = Plan::factory()->published()->create(['sort_order' => 1]);
+
+        $response = $this->actingAs($admin)->get(route('admin.plans.index'));
+
+        $response->assertViewHas('plans', fn ($plans) => $plans->pluck('id')->all() === [
+            $publishedFirst->id,
+            $publishedLater->id,
+            $draft->id,
+            $archived->id,
+        ]);
+    }
+
     public function test_keyword_and_status_filter_plans(): void
     {
         $admin = User::factory()->admin()->create();
